@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.user.autostart</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>PYTHON_PATH</string>  <!-- 这里替换为你的 Python 解释器路径 -->
+      <string>PYSCRIPT_PATH</string>  <!-- 替换为你的 Python 脚本路径 -->
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>  <!-- 让脚本在登录时自动启动 -->
+
+    <key>KeepAlive</key>
+    <true/>  <!-- 让脚本在崩溃后自动重启 -->
+  </dict>
+</plist>
