@@ -6,14 +6,14 @@ PY_SCRIPT="$SCRIPT_DIR/SkipAppleMusic.py"
 
 # 设定模板路径和生成的 plist 文件路径
 TEMPLATE_PATH="$SCRIPT_DIR/com.user.AutoSkipMusic.template.plist"
-PLIST_PATH="/Library/LaunchAgents/com.user.AutoSkipMusic.plist"
+PLIST_PATH="/Library/LaunchDaemons/com.user.AutoSkipMusic.plist"
 
 # 需要 root 权限来写入 /Library/LaunchAgents/
-if [ "$(id -u)" -ne 0 ]; then
-    echo "错误: 需要 root 权限才能写入 $PLIST_PATH"
-    echo "请使用 sudo 重新运行此脚本"
-    exit 1
-fi
+# if [ "$(id -u)" -ne 0 ]; then
+#     echo "错误: 需要 root 权限才能写入 $PLIST_PATH"
+#     echo "请使用 sudo 重新运行此脚本"
+#     exit 1
+# fi
 
 # 判断 Python 脚本是否存在，不存在则退出
 if [ ! -f "$PY_SCRIPT" ]; then
