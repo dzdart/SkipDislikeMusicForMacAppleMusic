@@ -28,7 +28,9 @@ if [ ! -f "$TEMPLATE_PATH" ]; then
 fi
 
 # 提示用户输入 Python 解释器路径
-read -p "请输入 Python 解释器路径: " PYTHON_EXEC
+default_python=$(which python)
+read -p "请输入 Python 路径 [$default_python]: " PYTHON_EXEC
+PYTHON_EXEC=${PYTHON_EXEC:-$default_python}
 
 # 检查 Python 解释器是否存在并可执行
 if [ ! -x "$PYTHON_EXEC" ]; then
