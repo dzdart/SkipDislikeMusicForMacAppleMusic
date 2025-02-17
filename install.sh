@@ -92,3 +92,5 @@ launchctl load -w "$PLIST_PATH"
 launchctl start com.user.AutoSkipMusic
 
 echo "✅ AutoSkipMusic服务已启动"
+echo "关键字路径：$SKIPMUSIC_DIR/keywords.txt"
+echo "日志路径：$SKIPMUSIC_DIR/log.txt"
