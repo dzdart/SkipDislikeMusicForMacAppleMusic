@@ -47,8 +47,36 @@ if [ "$PYTHON_VERSION" -lt 3 ]; then
     exit 1
 fi
 
+# 提升权限
+sudo bash <<EOF
+echo "已切换到 root，当前用户: $(whoami)"
+
+#移除plist服务
+launchctl unload -w "$PLIST_PATH"
+launchctl stop com.user.skipmusic
+launchctl remove com.user.skipmusic
+
 # 生成新的 plist 文件，并替换 PYTHON_PATH 和 PYSCRIPT_PATH
 sed -e "s|PYTHON_PATH|$PYTHON_EXEC|g" -e "s|PYSCRIPT_PATH|$PY_SCRIPT|g" "$TEMPLATE_PATH" > "$PLIST_PATH"
+
+echo "执行完成，退出 root"
+EOF
+
+HOME_DIR="$HOME"
+SKIPMUSIC_DIR="$HOME_DIR/SkipMusic"
+
+
+# 判断日志和关键字目录是否存在，不存在则创建
+if [ ! -d "$SKIPMUSIC_DIR" ]; then
+    echo "📂 目录 $SKIPMUSIC_DIR 不存在，正在创建..."
+    mkdir -p "$SKIPMUSIC_DIR"
+else
+    echo "✅ 目录 $SKIPMUSIC_DIR 已存在"
+fi
+
+#创建关键字文件夹
+keywords_path="$SKIPMUSIC_DIR/keywords.txt"
+printf "你可以在本文件内创建关键字列表，每行一个。本行内容需要删除\n" > "$keywords_path"
 
 # 确保 plist 文件的权限正确
 chown root:wheel "$PLIST_PATH"
