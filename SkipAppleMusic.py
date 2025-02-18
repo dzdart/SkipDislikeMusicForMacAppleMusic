@@ -5,17 +5,20 @@ from plyer import notification  # 用于发送系统通知
 
 HOME_DIR = os.path.sep.join([os.path.expanduser("~"),"SkipMusic"])
 
+
 if not os.path.exists(HOME_DIR):
     os.makedirs(HOME_DIR)
 
 KEYWORDS_FILE = os.path.sep.join([HOME_DIR,"keywords.txt"])  # 关键字文件路径
 LOG_FILE=os.sep.join([HOME_DIR,"SkipMusic.log"])  # 日志文件路径
+GARBAGE_MUSIC_FILE=os.sep.join([HOME_DIR,"Garbage.txt"])  # 垃圾音乐文件路径
 
 # 记录日志
 def log(message):
     print(message)
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(message + "\n")
+
 try:
     # 检查关键字文件是否存在，不存在则创建
     if not os.path.exists(KEYWORDS_FILE):
@@ -30,6 +33,12 @@ try:
             f.write("# SkipMusic Log\n")
             f.flush()
             f.close()
+
+    if not os.path.exists(GARBAGE_MUSIC_FILE):
+        with open(GARBAGE_MUSIC_FILE, "w", encoding="utf-8") as f:
+            f.write("# Garbage Music\n")
+            f.flush()
+            f.close
 
     # 读取关键字列表，跳过第一行（注释）
     def read_keywords_from_file():
@@ -79,9 +88,15 @@ try:
             return None
 
     # 切换到下一曲
-    def skip_to_next_track():
+    def skip_to_next_track(track=""):
         try:
             subprocess.run(['osascript', '-e', 'tell application "Music" to skip to next track'])
+            if track!="":
+                log(f"Skipping track: {track}")
+                with open(GARBAGE_MUSIC_FILE,"a", encoding="utf-8") as f:
+                    f.write(track + "\n")
+                    f.flush()
+                    f.close()
         except Exception as e:
             print(f"Error skipping track: {e}")
 
@@ -126,8 +141,9 @@ try:
                     for keyword in keywords:
                         if keyword.lower() in current_track.lower():
                             log(f"Track contains the keyword '{keyword}', skipping to next track.")
-                            skip_to_next_track()
+                            skip_to_next_track(current_track)
                             send_notification(f"Skipped track: {current_track}")
+
                             break  # 找到匹配的关键字后跳出循环
 
             else:
