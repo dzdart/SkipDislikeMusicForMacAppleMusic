@@ -90,6 +90,7 @@ try:
     # 切换到下一曲
     def skip_to_next_track(track=""):
         try:
+            MarkDislike()
             subprocess.run(['osascript', '-e', 'tell application "Music" to skip to next track'])
             if track!="":
                 log(f"Skipping track: {track}")
@@ -110,7 +111,41 @@ try:
         except Exception as e:
             print(f"Error sending notification: {e}")
 
-    
+    #标记不喜欢
+    def MarkDislike():
+        applescript = '''
+        tell application "Music"
+            if player state is playing then
+                try
+                    set currentTrack to current track
+                    set disliked of currentTrack to true
+                    display notification "已标记减少推荐: " & (get name of currentTrack)
+                on error
+                    display dialog "无法标记当前歌曲"
+                end try
+            else
+                display dialog "当前没有播放的歌曲"
+            end if
+        end tell
+        '''
+        try:
+            # 执行AppleScript
+            process = subprocess.run(
+                ["osascript", "-e", applescript],
+                check=True,
+                text=True,
+                capture_output=True
+            )
+
+            # 输出执行结果（调试时使用）
+            log(f"执行结果:{process.stdout}")
+
+        except subprocess.CalledProcessError as e:
+            log(f"执行失败 (错误码 {e.returncode}):")
+            log(f"错误信息:{e.stderr}", )
+        except Exception as e:
+            log(f"发生意外错误:{e}")
+
 
     # 监控 Apple Music 播放状态
     def monitor_music_playback():
